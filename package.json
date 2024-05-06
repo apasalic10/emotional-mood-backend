@@ -1,0 +1,22 @@
+{
+  "name": "emotional-mood-backend",
+  "version": "1.0.0",
+  "description": "Backend application for the 'Emotional Journal' and 'Mood Tracker' applications, providing support for tracking users emotional states and moods.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/apasalic10/emotional-mood-backend.git"
+  },
+  "author": "Almedin Pasalic",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/apasalic10/emotional-mood-backend/issues"
+  },
+  "homepage": "https://github.com/apasalic10/emotional-mood-backend#readme",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
