@@ -9,6 +9,12 @@ const emotionSchema = new mongoose.Schema(
     iconUrl: {
       type: String,
     },
+    description: {
+      type: String,
+    },
+    reaction: {
+      type: String,
+    },
   },
   {
     timestamps: true,
