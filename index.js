@@ -9,6 +9,9 @@ const app = express();
 app.use(express.json());
 
 app.use("/api/users", require("./routes/userRoutes"));
+app.use("/api/emotions", require("./routes/emotionRoutes"));
+app.use("/api/relaxations", require("./routes/relaxationRoutes"));
+app.use("/api/educationMaterials", require("./routes/educationMaterialRoutes"));
 
 app.use(errorHandler);
 app.listen(port, () => {
