@@ -85,4 +85,76 @@ const currentUser = asyncHandler(async (req, res) => {
   res.json(req.user);
 });
 
-module.exports = { registerUser, loginUser, currentUser };
+//@desc Get all users
+//@route GET /api/users
+//@access Private
+const getAllUsers = asyncHandler(async (req, res) => {
+  const users = await User.findAll();
+  res.json(users);
+});
+
+//@desc Update user
+//@route PUT /api/users/:id
+//@access Private
+const updateUser = asyncHandler(async (req, res) => {
+  const { firstname, lastname, username, email, password, isAdmin } = req.body;
+
+  const user = await User.findById(req.params.id);
+
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+
+  if (firstname) user.firstname = firstname;
+  if (lastname) user.lastname = lastname;
+  if (username) user.username = username;
+  if (email) user.email = email;
+  if (isAdmin !== undefined) user.isAdmin = isAdmin;
+
+  if (password) {
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(password, salt);
+  }
+
+  const updatedUser = await user.save();
+
+  res.json(updatedUser);
+});
+
+//@desc Delete user
+//@route DELETE /api/users/:id
+//@access Private
+const deleteUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
+
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+
+  await user.remove();
+
+  res.json({ message: "User removed" });
+});
+
+const getUserById = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id).select("-password");
+
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+
+  res.status(200).json(user);
+});
+
+module.exports = {
+  registerUser,
+  loginUser,
+  currentUser,
+  getAllUsers,
+  updateUser,
+  deleteUser,
+  getUserById,
+};
