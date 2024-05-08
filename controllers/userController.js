@@ -51,13 +51,15 @@ const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
     res.status(400);
-    throw new Error("All fields ar mandatory");
+    throw new Error("All fields are mandatory");
   }
 
   const user = await User.findOne({ email });
 
   if (user && (await bcrypt.compare(password, user.password))) {
-    const acceessToken = jwt.sign(
+    const expiresIn = user.isAdmin ? "30m" : null;
+
+    const accessToken = jwt.sign(
       {
         user: {
           firstname: user.firstname,
@@ -69,9 +71,9 @@ const loginUser = asyncHandler(async (req, res) => {
         },
       },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "30m" }
+      expiresIn ? { expiresIn } : undefined
     );
-    res.status(200).json({ acceessToken });
+    res.status(200).json({ accessToken });
   } else {
     res.status(401);
     throw new Error("Email or password is not valid");
@@ -89,7 +91,7 @@ const currentUser = asyncHandler(async (req, res) => {
 //@route GET /api/users
 //@access Private
 const getAllUsers = asyncHandler(async (req, res) => {
-  const users = await User.findAll();
+  const users = await User.find();
   res.json(users);
 });
 
@@ -133,7 +135,7 @@ const deleteUser = asyncHandler(async (req, res) => {
     throw new Error("User not found");
   }
 
-  await user.destroy();
+  await user.deleteOne();
 
   res.json({ message: "User removed" });
 });

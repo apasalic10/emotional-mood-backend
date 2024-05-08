@@ -28,4 +28,14 @@ const emotionEntrySchema = new mongoose.Schema(
   }
 );
 
+emotionEntrySchema.pre("save", function (next) {
+  if (this.emotion_id && typeof this.emotion_id === "string") {
+    this.emotion_id = mongoose.Types.ObjectId(this.emotion_id);
+  }
+  if (this.activity_id && typeof this.activity_id === "string") {
+    this.activity_id = mongoose.Types.ObjectId(this.activity_id);
+  }
+  next();
+});
+
 module.exports = mongoose.model("EmotionEntry", emotionEntrySchema);

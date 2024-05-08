@@ -1,11 +1,11 @@
 const asyncHandler = require("express-async-handler");
-const EducationMaterial = require("../models/educationMaterialModel");
+const EducationMaterial = require("../models/educationalMaterialModel");
 
 //@desc Fetch all education materials
 //@route GET /api/educationMaterials
 //@access Private
 const getEducationMaterials = asyncHandler(async (req, res) => {
-  const educationMaterials = await EducationMaterial.findAll();
+  const educationMaterials = await EducationMaterial.find();
   res.status(200).json(educationMaterials);
 });
 
@@ -13,7 +13,7 @@ const getEducationMaterials = asyncHandler(async (req, res) => {
 //@route GET /api/educationMaterials/:id
 //@access Private
 const getEducationMaterialById = asyncHandler(async (req, res) => {
-  const educationMaterial = await EducationMaterial.findByPk(req.params.id);
+  const educationMaterial = await EducationMaterial.findById(req.params.id);
   if (educationMaterial) {
     res.status(200).json(educationMaterial);
   } else {
@@ -26,12 +26,12 @@ const getEducationMaterialById = asyncHandler(async (req, res) => {
 //@route POST /api/educationMaterials
 //@access Private
 const createEducationMaterial = asyncHandler(async (req, res) => {
-  const { name, description, imageUrl } = req.body;
+  const { title, description, url } = req.body;
 
   const educationMaterial = await EducationMaterial.create({
-    name,
+    title,
     description,
-    imageUrl,
+    url,
   });
 
   res.status(201).json(educationMaterial);
@@ -41,14 +41,14 @@ const createEducationMaterial = asyncHandler(async (req, res) => {
 //@route DELETE /api/educationMaterials/:id
 //@access Private
 const deleteEducationMaterial = asyncHandler(async (req, res) => {
-  const educationMaterial = await EducationMaterial.findByPk(req.params.id);
+  const educationMaterial = await EducationMaterial.findById(req.params.id);
 
   if (!educationMaterial) {
     res.status(404);
     throw new Error("Education material not found");
   }
 
-  await educationMaterial.destroy();
+  await educationMaterial.deleteOne();
   res.status(204).json({ message: "Education material removed" });
 });
 
@@ -58,7 +58,7 @@ const deleteEducationMaterial = asyncHandler(async (req, res) => {
 const updateEducationMaterial = asyncHandler(async (req, res) => {
   const { name, description, imageUrl } = req.body;
 
-  const educationMaterial = await EducationMaterial.findByPk(req.params.id);
+  const educationMaterial = await EducationMaterial.findById(req.params.id);
 
   if (!educationMaterial) {
     res.status(404);

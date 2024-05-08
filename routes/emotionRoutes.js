@@ -25,3 +25,5 @@ router.put("/:id", validateToken, validateAdmin, updateEmotion);
 
 // DELETE /api/emotions/:id
 router.delete("/:id", validateToken, validateAdmin, deleteEmotion);
+
+module.exports = router;

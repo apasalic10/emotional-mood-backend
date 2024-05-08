@@ -5,7 +5,7 @@ const Relaxation = require("../models/relaxationModel");
 //@route GET /api/relaxations
 //@access Private
 const getRelaxations = asyncHandler(async (req, res) => {
-  const relaxations = await Relaxation.findAll();
+  const relaxations = await Relaxation.find();
   res.status(200).json(relaxations);
 });
 
@@ -13,7 +13,7 @@ const getRelaxations = asyncHandler(async (req, res) => {
 //@route GET /api/relaxations/:id
 //@access Private
 const getRelaxationById = asyncHandler(async (req, res) => {
-  const relaxation = await Relaxation.findByPk(req.params.id);
+  const relaxation = await Relaxation.findById(req.params.id);
   if (relaxation) {
     res.status(200).json(relaxation);
   } else {
@@ -26,12 +26,12 @@ const getRelaxationById = asyncHandler(async (req, res) => {
 //@route POST /api/relaxations
 //@access Private
 const createRelaxation = asyncHandler(async (req, res) => {
-  const { name, description, imageUrl } = req.body;
+  const { title, description, url } = req.body;
 
   const relaxation = await Relaxation.create({
-    name,
+    title,
     description,
-    imageUrl,
+    url,
   });
 
   res.status(201).json(relaxation);
@@ -41,14 +41,14 @@ const createRelaxation = asyncHandler(async (req, res) => {
 //@route DELETE /api/relaxations/:id
 //@access Private
 const deleteRelaxation = asyncHandler(async (req, res) => {
-  const relaxation = await Relaxation.findByPk(req.params.id);
+  const relaxation = await Relaxation.findById(req.params.id);
 
   if (!relaxation) {
     res.status(404);
     throw new Error("Relaxation not found");
   }
 
-  await relaxation.destroy();
+  await relaxation.deleteOne();
   res.status(204).json({ message: "Relaxation removed" });
 });
 
@@ -58,7 +58,7 @@ const deleteRelaxation = asyncHandler(async (req, res) => {
 const updateRelaxation = asyncHandler(async (req, res) => {
   const { name, description, imageUrl } = req.body;
 
-  const relaxation = await Relaxation.findByPk(req.params.id);
+  const relaxation = await Relaxation.findById(req.params.id);
 
   if (!relaxation) {
     res.status(404);
