@@ -5,7 +5,7 @@ const Emotion = require("../models/emotionModel");
 //@route GET /api/emotions
 //@access Private
 const getEmotions = asyncHandler(async (req, res) => {
-  const emotions = await Emotion.findAll();
+  const emotions = await Emotion.find();
   res.status(200).json(emotions);
 });
 
@@ -13,7 +13,7 @@ const getEmotions = asyncHandler(async (req, res) => {
 //@route GET /api/emotions/:id
 //@access Private
 const getEmotionById = asyncHandler(async (req, res) => {
-  const emotion = await Emotion.findByPk(req.params.id);
+  const emotion = await Emotion.findById(req.params.id);
   if (emotion) {
     res.status(200).json(emotion);
   } else {
@@ -26,12 +26,13 @@ const getEmotionById = asyncHandler(async (req, res) => {
 //@route POST /api/emotions
 //@access Private
 const createEmotion = asyncHandler(async (req, res) => {
-  const { name, description, imageUrl } = req.body;
+  const { name, iconUrl, description, reaction } = req.body;
 
   const emotion = await Emotion.create({
     name,
+    iconUrl,
     description,
-    imageUrl,
+    reaction,
   });
 
   res.status(201).json(emotion);
@@ -41,14 +42,14 @@ const createEmotion = asyncHandler(async (req, res) => {
 //@route DELETE /api/emotions/:id
 //@access Private
 const deleteEmotion = asyncHandler(async (req, res) => {
-  const emotion = await Emotion.findByPk(req.params.id);
+  const emotion = await Emotion.findById(req.params.id);
 
   if (!emotion) {
     res.status(404);
     throw new Error("Emotion not found");
   }
 
-  await emotion.destroy();
+  await emotion.deleteOne();
   res.status(204).json({ message: "Emotion removed" });
 });
 
@@ -58,7 +59,7 @@ const deleteEmotion = asyncHandler(async (req, res) => {
 const updateEmotion = asyncHandler(async (req, res) => {
   const { name, description, imageUrl } = req.body;
 
-  const emotion = await Emotion.findByPk(req.params.id);
+  const emotion = await Emotion.findById(req.params.id);
 
   if (!emotion) {
     res.status(404);
@@ -74,4 +75,10 @@ const updateEmotion = asyncHandler(async (req, res) => {
   res.status(200).json(updatedEmotion);
 });
 
-module.exports = { getEmotions, getEmotionById, createEmotion, deleteEmotion };
+module.exports = {
+  getEmotions,
+  getEmotionById,
+  createEmotion,
+  deleteEmotion,
+  updateEmotion,
+};
