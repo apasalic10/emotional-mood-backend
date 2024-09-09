@@ -61,9 +61,24 @@ const deleteEmotionEntry = asyncHandler(async (req, res) => {
   res.status(204).json({ message: "Emotion entry removed" });
 });
 
+//@desc Delete all emotion entries
+//@route DELETE /api/emotionEntries
+//@access Private
+const deleteAllEmotionEntries = asyncHandler(async (req, res) => {
+  const result = await EmotionEntry.deleteMany({});
+
+  if (result.deletedCount === 0) {
+    res.status(404);
+    throw new Error("No emotion entries found to delete");
+  }
+
+  res.status(204).json({ message: "All emotion entries removed" });
+});
+
 module.exports = {
   getEmotionEntries,
   getEmotionEntryById,
   createEmotionEntry,
   deleteEmotionEntry,
+  deleteAllEmotionEntries,
 };
