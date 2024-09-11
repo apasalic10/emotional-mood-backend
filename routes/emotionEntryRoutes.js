@@ -5,6 +5,7 @@ const {
   createEmotionEntry,
   deleteEmotionEntry,
   deleteAllEmotionEntries,
+  getEmotionEntriesByUserId,
 } = require("../controllers/emotionEntryController");
 const validateToken = require("../middleware/validateTokenHandler");
 const validateAdmin = require("../middleware/validateAdmin");
@@ -24,5 +25,12 @@ router.post("/", validateToken, createEmotionEntry);
 router.delete("/:id", validateToken, validateAdmin, deleteEmotionEntry);
 
 router.delete("/", validateToken, validateAdmin, deleteAllEmotionEntries);
+
+router.get(
+  "/user/:userId",
+  validateToken,
+  validateAdmin,
+  getEmotionEntriesByUserId
+);
 
 module.exports = router;

@@ -6,7 +6,16 @@ const port = process.env.PORT || 5000;
 
 connectDb();
 const app = express();
+const cors = require("cors");
 app.use(express.json());
+
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
 
 app.use("/api/users", require("./routes/userRoutes"));
 app.use("/api/emotions", require("./routes/emotionRoutes"));

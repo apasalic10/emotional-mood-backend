@@ -29,6 +29,66 @@ const getEmotionEntryById = asyncHandler(async (req, res) => {
   }
 });
 
+//@desc Fetch emotion entries by user ID
+//@route GET /api/emotionEntries/user/:userId
+//@access Private
+const getEmotionEntriesByUserId = asyncHandler(async (req, res) => {
+  const userId = req.params.userId;
+
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    console.log("Invalid userId:", userId);
+    return res.status(400).json({ message: "Invalid user ID" });
+  }
+
+  try {
+    const emotionEntries = await EmotionEntry.aggregate([
+      {
+        $match: {
+          $expr: {
+            $eq: [{ $toString: "$user_id" }, userId],
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: "emotions",
+          localField: "emotion_id",
+          foreignField: "_id",
+          as: "emotion",
+        },
+      },
+      {
+        $lookup: {
+          from: "activities",
+          localField: "activity_id",
+          foreignField: "_id",
+          as: "activity",
+        },
+      },
+      {
+        $unwind: {
+          path: "$emotion",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $unwind: {
+          path: "$activity",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+    ]);
+
+    res.status(200).json(emotionEntries);
+  } catch (error) {
+    console.error("Error fetching emotion entries:", error);
+    res.status(500).json({
+      message: "Error fetching emotion entries",
+      error: error.message,
+    });
+  }
+});
+
 //@desc Create a new emotion entry
 //@route POST /api/emotionEntries
 //@access Public
@@ -81,4 +141,5 @@ module.exports = {
   createEmotionEntry,
   deleteEmotionEntry,
   deleteAllEmotionEntries,
+  getEmotionEntriesByUserId,
 };
